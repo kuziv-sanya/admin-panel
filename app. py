@@ -1,0 +1,73 @@
+from flask import Flask
+
+app = Flask(__name__)
+
+admins = [
+    {"name": "Kuziv", "points": 120},
+    {"name": "Alexander", "points": 75}
+]
+
+@app.route("/")
+def home():
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Admin Panel</title>
+        <style>
+            body{
+                font-family:Arial;
+                background:#111827;
+                color:white;
+                padding:40px;
+            }
+
+            h1{
+                margin-bottom:30px;
+            }
+
+            .card{
+                background:#1f2937;
+                padding:20px;
+                border-radius:15px;
+                margin-bottom:15px;
+            }
+
+            button{
+                background:#8b5cf6;
+                color:white;
+                border:none;
+                padding:10px 18px;
+                border-radius:10px;
+                cursor:pointer;
+            }
+
+            button:hover{
+                opacity:.9;
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <h1>👥 Администраторы</h1>
+    """
+
+    for admin in admins:
+        html += f"""
+        <div class="card">
+            <h2>{admin['name']}</h2>
+            <p>⭐ Баллы: {admin['points']}</p>
+            <button>Выдать баллы</button>
+        </div>
+        """
+
+    html += """
+    </body>
+    </html>
+    """
+
+    return html
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
