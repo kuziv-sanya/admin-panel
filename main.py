@@ -175,3 +175,56 @@ bot.run(TOKEN)
     )
 
     await ctx.send(embed=embed)
+def get_log_channel(guild):
+    return discord.utils.get(guild.text_channels, name="logs")
+@bot.event
+async def on_member_join(member):
+    channel = get_log_channel(member.guild)
+
+    if channel:
+        embed = discord.Embed(
+            title="👋 Добро пожаловать!",
+            description=f"{member.mention} присоединился к серверу",
+            color=discord.Color.green()
+        )
+        await channel.send(embed=embed)
+
+@bot.command()
+@commands.has_permissions(manage_roles=True)
+async def mute(ctx, member: discord.Member, *, reason="не указана"):
+
+    role = discord.utils.get(ctx.guild.roles, name="Muted")
+
+    if not role:
+        await ctx.send("❌ Роль Muted не найдена")
+        return
+
+    await member.add_roles(role)
+
+    await ctx.send(f"🔇 {member.mention} замучен. Причина: {reason}")
+
+    channel = get_log_channel(ctx.guild)
+
+    if channel:
+        await channel.send(f"🔇 MUTE | {member} | {reason} | {ctx.author}")
+
+@bot.event
+async def on_member_remove(member):
+    channel = get_log_channel(member.guild)
+
+    if channel:
+        embed = discord.Embed(
+            title="👋 Участник вышел",
+            description=f"**{member.name}** покинул сервер",
+            color=discord.Color.red()
+        )
+        await channel.send(embed=embed)
+if warns[user_id] >= 3:
+
+    role = discord.utils.get(ctx.guild.roles, name="Muted")
+
+    if role:
+        await member.add_roles(role)
+
+    await ctx.send(f"🚫 {member.mention} получил AUTO-MUTE (3 варна)")
+
